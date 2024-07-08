@@ -5,7 +5,11 @@
     "hardhat": "^2.22.6"
   },
   "dependencies": {
+    "@chainlink/contracts": "^1.1.1",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.4.2",
     "@openzeppelin/contracts": "^5.0.2",
-    "chai": "^4.3.7"
+    "chai": "^4.3.7",
+    "ethers": "^6.13.1",
+    "hardhat-deploy": "^0.12.4"
   }
 }
