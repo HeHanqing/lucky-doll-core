@@ -1,7 +1,5 @@
 # LuckyDoll Core
 
----
-
 This repository contains the core smart contracts for the LuckyDoll NFT Protocol.More details about the LuckyDoll, see the [LuckyDoll website](https://luckydoll.netlify.app/).
 
 ## Feature Introduction
