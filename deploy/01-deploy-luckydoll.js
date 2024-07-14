@@ -5,18 +5,20 @@ const {
 } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
-const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2");
+const VRF_SUB_FUND_AMOUNT = ethers.parseEther("100");
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer: hardhatDeployer } = await getNamedAccounts();
+
+  const [deployer] = await ethers.getSigners();
+  console.log(deployer.address);
+
   const chainId = network.config.chainId;
-  let vrfCoordinatorV2_5Address, subscriptionId;
+  let vrfCoordinatorV2_5Address, subscriptionId, vrfCoordinatorV2_5Mock;
 
   if (developmentChains.includes(network.name)) {
-    const vrfCoordinatorV2_5Mock = await ethers.getContract(
-      "VRFCoordinatorV2_5Mock"
-    );
+    vrfCoordinatorV2_5Mock = await ethers.getContract("VRFCoordinatorV2_5Mock");
     vrfCoordinatorV2_5Address = vrfCoordinatorV2_5Mock.target;
     const transactionResponse =
       await vrfCoordinatorV2_5Mock.createSubscription();
@@ -34,8 +36,10 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
   const args = [vrfCoordinatorV2_5Address, subscriptionId];
 
-  await deploy("LuckyDoll", {
-    from: deployer,
+  const LuckyDoll = await deploy("LuckyDoll", {
+    from: developmentChains.includes(network.name)
+      ? hardhatDeployer
+      : deployer.address,
     args: args,
     log: true,
     waitConfirmations: network.config.blockConfirmations || 1,
@@ -46,7 +50,9 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     process.env.ETHERSCAN_API_KEY
   ) {
     console.log("Verifying contract...");
-    await verify(raffle.address, args);
+    await verify(LuckyDoll.address, args);
+  } else {
+    await vrfCoordinatorV2_5Mock.addConsumer(subscriptionId, LuckyDoll.address);
   }
 
   console.log("-----------------------------");

@@ -1,9 +1,9 @@
 const { network, ethers } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
 
-const BASE_FEE = ethers.parseEther("0.1");
+const BASE_FEE = ethers.parseEther("0.25");
 const GAS_PRICE_LINK = 1000000000;
-const WEIPERUNITLINK = 4381470000000000;
+const WEIPERUNITLINK = 4211907652656961;
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
